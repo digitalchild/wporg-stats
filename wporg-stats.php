@@ -242,35 +242,21 @@ final class WPOrg_Stats {
 		$caller = ( isset( $trace[ 1 ] ) ) ? array_key_exists( 'class', $trace[ 1 ] ) ? $trace[ 1 ][ 'class' ] : '' : ''; 
 
 		if ( self::$enable_logging ){ 
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				if ( is_array( $data ) || is_object( $data ) ) { 
+					
+					// Output to the error log 
+					error_log( '===================    ' . $pre .' : ' . $caller . '   ======================' ); 
+					error_log( $caller . ' : ' . print_r( $data, true ) ); 
+					error_log( '==============================================================='); 
+				} else { 
 
-				if ( empty( self::$log ) ) {
-					self::$log = new WC_Logger();
+					// Output to debugging log 
+					error_log( '===================    '  . $pre .' : ' . $caller . '   ======================' ); 
+					error_log( $caller  . ' : ' . $data );
+					error_log( '==============================================================='); 
 				}
-
-				if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-					if ( is_array( $data ) || is_object( $data ) ) { 
-						
-						// Write to the log file for viewing in wp-admin 
-						self::$log->add( 'wporg-stats', '===================    ' . $pre .' : ' . $caller . '   ======================' );
-						self::$log->add( 'wporg-stats', $caller . ' : ' . print_r( $data, true ) );
-						self::$log->add( 'wporg-stats','===============================================================' );
-
-						// Output to the error log 
-						error_log( '===================    ' . $pre .' : ' . $caller . '   ======================' ); 
-						error_log( $caller . ' : ' . print_r( $data, true ) ); 
-						error_log( '==============================================================='); 
-					} else { 
-						// Write to the log file for viewing in wp-admin 
-						self::$log->add( 'wporg-stats', '===================    '  . $pre .' : ' . $caller . '   ======================' ); 
-						self::$log->add( 'wporg-stats', $caller  . ' : ' . $data );
-						self::$log->add( 'wporg-stats', '==============================================================='); 
-
-						// Output to debugging log 
-						error_log( '===================    '  . $pre .' : ' . $caller . '   ======================' ); 
-						error_log( $caller  . ' : ' . $data );
-						error_log( '==============================================================='); 
-					}
-				}
+			}
 		}
 	} 
 
