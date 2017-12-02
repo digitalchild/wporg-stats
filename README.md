@@ -19,27 +19,31 @@ This will show the stat that you define as per the json object returned from htt
 
 The following properties are available. 
 
-name 
-slug
-version 
-author
-author_profile
-contributors 
-requires
-tested
-compatibility
-rating
-ratings (array of 1-5 rating counts)
-num_ratings (total ratings count)
-support_threads (total support threads)
-support_threads_resolved ( total support threads resolved )
-downloaded (total number of dowonloads)
-last_updated 
-added
-homepage
-sections
-download_link
-screenshots (array of screen shots with src and caption as sub keys of screenshot number )
-tags (array of tags with tag slugs as keys)
-version (array of versions with version number as keys)
-donate_link 
+* name 
+* slug
+* version 
+* author
+* author_profile
+* contributors 
+* requires
+* tested
+* compatibility
+* rating
+* ratings (array of 1-5 rating counts)
+* num_ratings (total ratings count)
+* support_threads (total support threads)
+* support_threads_resolved ( total support threads resolved )
+* downloaded (total number of dowonloads)
+* last_updated 
+* added
+* homepage
+* sections
+* download_link
+* screenshots (array of screen shots with src and caption as sub keys of screenshot number )
+* tags (array of tags with tag slugs as keys)
+* version (array of versions with version number as keys)
+* donate_link 
+
+Example 
+
+Show the Last updated [wpps_show_stat slug="wordpress-org-slug-here" stat="last_updated" ] 
