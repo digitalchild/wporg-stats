@@ -2,7 +2,7 @@
 /**
  * Plugin Name:         WPOrg Stats 
  * Plugin URI:          https://github.com/digitalchild/wporg-stats
- * Description:         Display your WordPress.org plugin information on your site. 
+ * Description:         Display WordPress.org plugin or theme information on your site. 
  * Author:              Jamie Madden (https://github.com/digitalchild)
  * Author URI:          https://github.com/digitalchild
  * GitHub Plugin URI:   https://github.com/digitalchild/wporg-stats
@@ -118,7 +118,8 @@ final class WPOrg_Stats {
 	 * @since  2.0
 	 */
 	private function init_hooks() {
-		add_shortcode( 'wpps_show_stat', array( $this, 'wpps_show_stat' ) ); 
+		add_shortcode( 'wpps_show_plugin_info', array( $this, 'wpps_show_plugin_info' ) ); 
+		add_shortcode( 'wpps_show_theme_info', 	array( $this, 'wpps_show_theme_info' ) ); 
 	}
 
 	/**
@@ -168,13 +169,18 @@ final class WPOrg_Stats {
 		return apply_filters( 'wpps_template_path', 'wporg-stats/' );
 	}
 
-	// Show all stats from the page 
-	public function wpps_show_stat( $atts ){ 
+	/*
+	*	Show plugin stats from wordpress.org 
+	*/ 
+	public function wpps_show_plugin_info( $atts ){ 
 
 		extract( shortcode_atts( array(
 			'slug' 	=> '', 
-			'stat' 	=> 'downloaded'
+			'info' 	=> 'downloaded'
 		), $atts ) );
+
+		// No slug provided, bail 
+		if ( ! $slug ) return; 
 
 		$stats = $this->get_wp_plugin_info( $slug ); 
 
@@ -186,6 +192,34 @@ final class WPOrg_Stats {
 
 	}
 
+	/*
+	*	Show theme stats from wordpress.org 
+	*/ 
+	public function wpps_show_theme_info( $atts ){ 
+
+		extract( shortcode_atts( array(
+			'slug' 	=> '', 
+			'info' 	=> 'downloaded'
+		), $atts ) );
+
+		// No slug provided, bail 
+		if ( ! $slug ) return; 
+
+		$stats = $this->get_wp_theme_info( $slug ); 
+
+		if ( $all ){ 
+			return print_r( $stats ); 
+		}
+
+		if ( is_numeric( $stats->$stat ) ){ 
+			return number_format( $stats->$stat ); 
+		} else { 
+			return  $stats->$stat; 
+		}
+
+	}
+
+
 
 	/**
 	*	Get the plugin information from wp.org 
@@ -194,10 +228,12 @@ final class WPOrg_Stats {
 	*/
 	public function get_wp_plugin_info( $slug ){ 
 
-		$url = 'https://api.wordpress.org/plugins/info/1.0/' . $slug . '.json';
+		// $url = 'https://api.wordpress.org/plugins/info/1.0/' . $slug . '.json';
 		
+		$url = 'https://wordpress.org/plugins/wp-json/plugins/v1/plugin/'. $slug; 
+
 		// Get any existing copy of our transient data
-		if ( false === ( $wp_org_response = get_transient( 'wpps_' . $slug . '_results' ) ) ) {
+		if ( false === ( $wp_org_response = get_transient( 'wpps_plugin_' . $slug . '_results' ) ) ) {
 
 		    $wp_org_response = wp_remote_request( $url, array( 'method' => 'GET' ) ); 
 
@@ -205,10 +241,38 @@ final class WPOrg_Stats {
 				return $wp_org_response->get_error_message();
 			}
 
-		    set_transient( 'wpps_' . $slug . '_results', $wp_org_response, 12 * HOUR_IN_SECONDS );
+		    set_transient( 'wpps_plugin_' . $slug . '_results', $wp_org_response, 12 * HOUR_IN_SECONDS );
 		}
 
 		return json_decode( wp_remote_retrieve_body( $wp_org_response ) ); 
+	}
+
+
+	/**
+	*	Get theme information from wp.org 
+	*	Cache the results to ensure fast access. 
+	*/ 
+	public function get_wp_theme_info( $slug ){ 
+
+		$url = 'https://api.wordpress.org/themes/info/1.1/?action=theme_information&request[slug]=' . $slug; 
+
+
+		// Get any existing copy of our transient data
+		if ( false === ( $wp_org_response = get_transient( 'wpps_theme_' . $slug . '_results' ) ) ) {
+
+		    $wp_org_response = wp_remote_request( $url, array( 'method' => 'GET' ) ); 
+
+		    if ( is_wp_error( $wp_org_response ) ) {
+				return $wp_org_response->get_error_message();
+			}
+
+		    set_transient( 'wpps_theme_' . $slug . '_results', $wp_org_response, 12 * HOUR_IN_SECONDS );
+		}
+
+		self::log( json_decode( wp_remote_retrieve_body( $wp_org_response ) ) ); 
+
+		return json_decode( wp_remote_retrieve_body( $wp_org_response ) ); 
+
 	}
 
 	/**

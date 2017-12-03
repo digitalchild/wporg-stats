@@ -7,17 +7,19 @@ Results are cached for 12 hours to ensure optimal loading times for the site.
 
 # Usage # 
 
+- Plugins 
+
 Show total downloads 
 
-[wpps_show_stat slug="wordpress-org-slug-here"] 
+[wpps_show_plugin_info slug="wordpress-org-slug-here"] 
 
-Show any other stat from the slug 
+Show any other info from the plugin that is available from the API.
 
-[wpps_show_stat slug="wordpress-org-slug-here" stat="results->property" ] 
+[wpps_show_plugin_info slug="wordpress-org-plugin-slug-here" info="see below" ] 
 
 This will show the stat that you define as per the json object returned from https://api.wordpress.org/plugins/info/1.0/{your-slug}.json 
 
-The following properties are available. 
+The following info are available. 
 
 * name 
 * slug
@@ -47,3 +49,27 @@ The following properties are available.
 Example 
 
 Show the Last updated [wpps_show_stat slug="wordpress-org-slug-here" stat="last_updated" ] 
+
+- Themes 
+
+Show total downloads 
+
+[wpps_show_theme_info slug="wordpress-org-theme-slug-here"] 
+
+Show any other info from the theme that is available from the API 
+
+[wpps_show_theme_info slug="wordpress-org-theme-slug-here" info="see below"] 
+
+name
+slug
+version
+preview_url
+author
+screenshot_url
+rating
+num_ratings
+downloaded
+last_updated
+homepage
+download_link
+tags
