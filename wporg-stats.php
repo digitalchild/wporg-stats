@@ -184,10 +184,10 @@ final class WPOrg_Stats {
 
 		$stats = $this->get_wp_plugin_info( $slug ); 
 
-		if ( is_numeric( $stats->$stat ) ){ 
-			return number_format( $stats->$stat ); 
+		if ( is_numeric( $stats->$info ) ){ 
+			return number_format( $stats->$info ); 
 		} else { 
-			return  $stats->$stat; 
+			return  $stats->$info; 
 		}
 
 	}
@@ -211,10 +211,10 @@ final class WPOrg_Stats {
 			return print_r( $stats ); 
 		}
 
-		if ( is_numeric( $stats->$stat ) ){ 
-			return number_format( $stats->$stat ); 
+		if ( is_numeric( $stats->$info ) ){ 
+			return number_format( $stats->$info ); 
 		} else { 
-			return  $stats->$stat; 
+			return  $stats->$info; 
 		}
 
 	}
